@@ -1,1 +1,6 @@
+<<<<<<< HEAD
 hello, how no no you
+=======
+
+hello, how you
+>>>>>>> dev02
