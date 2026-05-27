@@ -1,6 +1,2 @@
 dev02 branch cut from dev branch
-<<<<<<< HEAD
-lets try to rebase
-=======
 ok,new line
->>>>>>> a10cd508454c61230faa3a6d4034a814f409f120
