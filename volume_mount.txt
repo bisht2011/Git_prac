@@ -1,0 +1,81 @@
+
+Great — let’s build a proper, production-style LVM setup step by step so it survives reboot and behaves correctly.
+
+I’ll keep it simple and safe.
+
+🧠 Goal
+
+You want:
+
+/dev/sdc, /dev/sdd, /dev/sde
+→ combined into LVM storage
+→ mounted permanently (example: /data or /mnt/lvm)
+⚠️ IMPORTANT WARNING
+
+This process will erase data on those disks if they contain old filesystem signatures.
+
+Only continue if these disks are meant for LVM.
+
+🧱 STEP 1: Make disks ready (wipe old signatures)
+
+Run:
+
+sudo wipefs -a /dev/sdc
+sudo wipefs -a /dev/sdd
+sudo wipefs -a /dev/sde
+🧱 STEP 2: Create Physical Volumes (PV)
+sudo pvcreate /dev/sdc /dev/sdd /dev/sde
+
+Check:
+
+sudo pvs
+🧱 STEP 3: Create Volume Group (VG)
+sudo vgcreate vg_data /dev/sdc /dev/sdd /dev/sde
+
+Check:
+
+sudo vgs
+🧱 STEP 4: Create Logical Volume (LV)
+
+Use full space:
+
+sudo lvcreate -l 100%FREE -n lv_storage vg_data
+
+Check:
+
+sudo lvs
+🧱 STEP 5: Create filesystem
+sudo mkfs.ext4 /dev/vg_data/lv_storage
+🧱 STEP 6: Create mount point
+sudo mkdir -p /data
+🧱 STEP 7: Mount manually
+sudo mount /dev/vg_data/lv_storage /data
+
+Verify:
+
+df -h
+🧱 STEP 8: Make mount permanent (VERY IMPORTANT)
+
+Get UUID:
+
+sudo blkid /dev/vg_data/lv_storage
+
+You’ll see something like:
+
+UUID="xxxx-xxxx"
+
+Edit fstab:
+
+sudo nano /etc/fstab
+
+Add line:
+
+UUID=xxxx-xxxx  /data  ext4  defaults,nofail  0  2
+
+
+
+#if df -h doesnt show mounted volumes.
+sudo vgchange -ay
+sudo mkdir -p /data
+sudo mount /dev/vg_data/lv_storage /data
+df -h
