@@ -1,6 +1,7 @@
-<<<<<<< HEAD
-hello, how no no you
-=======
 
+hello, how are you
+
+I am fine
+hello, how no no you
 hello, how you
->>>>>>> dev02
+
